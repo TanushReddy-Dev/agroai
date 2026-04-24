@@ -66,6 +66,8 @@ yarn-error.log*
 .expo-shared/
 dist/
 .cache/
+.gradle/
+android/.gradle/
 
 # OS
 Thumbs.db
