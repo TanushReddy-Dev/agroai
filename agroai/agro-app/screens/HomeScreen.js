@@ -143,6 +143,42 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Handle sensor mode
+   */
+  const handleSensorMode = async () => {
+    setLoading(true);
+    setApiError(null);
+
+    try {
+      console.log('[HomeScreen] Requesting sensor data...');
+      const response = await fetch('https://agroai-api-h344.onrender.com/sensor-recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 15000,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('[HomeScreen] Sensor recommendation received');
+      
+      // Navigate to results with sensor flag
+      navigation.navigate('Results', { 
+        result: data.recommendation,
+        sensorMode: true,
+        sensorData: data.sensor_data,
+      });
+    } catch (error) {
+      console.error('[HomeScreen] Sensor error:', error.message);
+      setApiError(`Sensor error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -264,6 +300,19 @@ const HomeScreen = ({ navigation }) => {
           )}
         </TouchableOpacity>
 
+        {/* Sensor Mode button */}
+        <TouchableOpacity
+          style={[styles.sensorButton, loading && styles.submitButtonDisabled]}
+          onPress={handleSensorMode}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color={COLORS.white} />
+          ) : (
+            <Text style={styles.sensorButtonText}>📡 Use Sensor Data</Text>
+          )}
+        </TouchableOpacity>
+
         {/* API Error */}
         {apiError && <AlertBanner message={apiError} type="error" />}
       </ScrollView>
@@ -345,6 +394,21 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.lg,
     fontWeight: '600',
     color: COLORS.white,
+  },
+  sensorButton: {
+    backgroundColor: COLORS.accentGlow,
+    borderRadius: RADIUS.lg,
+    paddingVertical: SPACING.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: SPACING.md,
+    borderWidth: 2,
+    borderColor: COLORS.accent,
+  },
+  sensorButtonText: {
+    fontSize: FONTS.sizes.lg,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
   },
 });
 

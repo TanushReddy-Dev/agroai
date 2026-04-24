@@ -15,6 +15,25 @@ NPK_TARGETS: Dict[str, Dict[str, float]] = {
     "general": {"N": 90.0, "P": 45.0, "K": 55.0},
 }
 
+# Fertilizer product database: brand options for each fertilizer type.
+FERTILIZER_PRODUCTS: Dict[str, List[Dict[str, str]]] = {
+    "Urea": [
+        {"brand": "IFFCO Urea 46%", "link": "https://iffco.in/products/urea"},
+        {"brand": "Tata Urea", "link": "https://tatachems.com/urea"},
+        {"brand": "Indian Potash Limited", "link": "https://www.ipl.org/products/urea"},
+    ],
+    "DAP": [
+        {"brand": "IFFCO DAP", "link": "https://iffco.in/products/dap"},
+        {"brand": "Tata DAP", "link": "https://tatachems.com/dap"},
+        {"brand": "Rashtriya Chemicals & Fertilizers", "link": "https://rcfltd.com/dap"},
+    ],
+    "MOP": [
+        {"brand": "IFFCO MOP", "link": "https://iffco.in/products/mop"},
+        {"brand": "Tata MOP", "link": "https://tatachems.com/mop"},
+        {"brand": "Indian Potash Limited", "link": "https://www.ipl.org/products/mop"},
+    ],
+}
+
 
 def calculate_fertilizer_plan(soil: SoilInput, crop: str) -> List[FertilizerRecommendation]:
     """
@@ -24,6 +43,8 @@ def calculate_fertilizer_plan(soil: SoilInput, crop: str) -> List[FertilizerReco
     - Urea for Nitrogen: gap / 0.46
     - DAP for Phosphorus: gap / 0.20 (P-equivalent adjustment from P2O5 context)
     - MOP for Potassium: gap / 0.60
+    
+    Also attaches brand and purchase link from FERTILIZER_PRODUCTS database.
     """
     target = NPK_TARGETS.get(crop, NPK_TARGETS["general"])
     plan: List[FertilizerRecommendation] = []
@@ -35,31 +56,40 @@ def calculate_fertilizer_plan(soil: SoilInput, crop: str) -> List[FertilizerReco
     # Recommend only meaningful deficits (>5 kg/ha).
     if n_gap > 5:
         urea_kg_per_ha = n_gap / 0.46
+        urea_product = FERTILIZER_PRODUCTS["Urea"][0]  # Default to first option
         plan.append(
             FertilizerRecommendation(
                 name="Urea",
                 amount=f"{urea_kg_per_ha:.1f} kg/acre",
                 reason=f"Nitrogen is {n_gap:.1f} kg/ha below optimal for {crop}",
+                brand=urea_product["brand"],
+                purchase_link=urea_product["link"],
             )
         )
 
     if p_gap > 5:
         dap_kg_per_ha = p_gap / 0.20
+        dap_product = FERTILIZER_PRODUCTS["DAP"][0]  # Default to first option
         plan.append(
             FertilizerRecommendation(
                 name="DAP",
                 amount=f"{dap_kg_per_ha:.1f} kg/acre",
                 reason=f"Phosphorus is {p_gap:.1f} kg/ha below optimal for {crop}",
+                brand=dap_product["brand"],
+                purchase_link=dap_product["link"],
             )
         )
 
     if k_gap > 5:
         mop_kg_per_ha = k_gap / 0.60
+        mop_product = FERTILIZER_PRODUCTS["MOP"][0]  # Default to first option
         plan.append(
             FertilizerRecommendation(
                 name="MOP",
                 amount=f"{mop_kg_per_ha:.1f} kg/acre",
                 reason=f"Potassium is {k_gap:.1f} kg/ha below optimal for {crop}",
+                brand=mop_product["brand"],
+                purchase_link=mop_product["link"],
             )
         )
 

@@ -66,6 +66,10 @@ class FertilizerRecommendation(BaseModel):
     amount: str = Field(..., description='Application amount (e.g. "40 kg/acre")')
     # Explanation of why this fertilizer is recommended.
     reason: str = Field(..., description="Reason for recommendation")
+    # Brand/product name (optional).
+    brand: Optional[str] = Field(default=None, description="Fertilizer brand/product name")
+    # Purchase link (optional).
+    purchase_link: Optional[str] = Field(default=None, description="Link to purchase this fertilizer")
 
 
 class CropRecommendation(BaseModel):

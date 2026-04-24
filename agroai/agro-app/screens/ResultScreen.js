@@ -98,6 +98,7 @@ const ResultScreen = ({ route, navigation }) => {
   };
 
   const { soil_analysis, crop_recommendation, fertilizer_plan, alerts, weather_used } = result;
+  const sensorMode = route.params?.sensorMode || false;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -107,7 +108,10 @@ const ResultScreen = ({ route, navigation }) => {
           <Text style={styles.backButton}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Analysis Results</Text>
-        {weather_used && <Text style={styles.weatherBadge}>🌤 Weather Used</Text>}
+        <View style={styles.badgesContainer}>
+          {sensorMode && <Text style={styles.sensorBadge}>📡 Sensor</Text>}
+          {weather_used && <Text style={styles.weatherBadge}>🌤 Weather</Text>}
+        </View>
       </View>
 
       {/* Soil Health Section */}
@@ -218,6 +222,8 @@ const ResultScreen = ({ route, navigation }) => {
               name={item.name}
               amount={item.amount}
               reason={item.reason}
+              brand={item.brand}
+              purchase_link={item.purchase_link}
             />
           ))
         )}
@@ -279,6 +285,12 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.lg,
     fontWeight: '600',
     color: COLORS.textPrimary,
+    flex: 1,
+    textAlign: 'center',
+  },
+  badgesContainer: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
   },
   weatherBadge: {
     fontSize: FONTS.sizes.sm,
@@ -288,6 +300,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.xs,
     borderRadius: RADIUS.full,
+  },
+  sensorBadge: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.warning,
+    fontWeight: '500',
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    borderRadius: RADIUS.full,
+    borderWidth: 1,
+    borderColor: COLORS.warning,
   },
   section: {
     paddingHorizontal: SPACING.lg,

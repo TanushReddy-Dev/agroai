@@ -15,6 +15,7 @@ from pydantic import ValidationError
 
 from app.model import model_manager
 from app.schemas import CropRecommendation, RecommendResponse, SoilInput
+from app.sensor import get_mock_sensor_data
 from app.services import analyze_soil, calculate_fertilizer_plan, generate_alerts
 from app.weather import WeatherAPIError, fetch_weather, is_weather_available
 
@@ -247,7 +248,72 @@ async def recommend_advanced(soil_input: SoilInput) -> RecommendResponse:
         ) from exc
 
 
-@app.exception_handler(RequestValidationError)
+@app.post("/sensor-recommend")
+async def sensor_recommend() -> Dict[str, Any]:
+    """
+    Sensor mode: Get mock sensor data and return recommendation.
+    
+    This endpoint simulates a real soil sensor providing data automatically.
+    No request body needed - sensor data is generated internally.
+    
+    Endpoint flow:
+    1. Generate mock sensor data
+    2. Run standard recommendation flow
+    3. Return recommendation with sensor data included
+    
+    Returns:
+        Dict with sensor_data and recommendation fields
+    """
+    logger.info("POST /sensor-recommend called")
+    
+    try:
+        # Generate mock sensor data
+        sensor_data = get_mock_sensor_data()
+        logger.info("Mock sensor data generated: N=%.1f, P=%.1f, K=%.1f, pH=%.1f",
+                    sensor_data.N, sensor_data.P, sensor_data.K, sensor_data.ph)
+        
+        # Run ML prediction
+        prediction = model_manager.predict(sensor_data)
+        logger.info("Crop prediction: %s (confidence: %.2f%%)",
+                    prediction["crop"], prediction["confidence"] * 100)
+        
+        # Analyze soil health
+        soil_analysis = analyze_soil(sensor_data)
+        logger.info("Soil analysis: %s (health_score=%.1f)",
+                    soil_analysis.health_label, soil_analysis.health_score)
+        
+        # Calculate fertilizer needs
+        fertilizer_plan = calculate_fertilizer_plan(sensor_data, prediction["crop"])
+        logger.info("Fertilizer plan: %d recommendations", len(fertilizer_plan))
+        
+        # Generate alerts
+        alerts = generate_alerts(sensor_data, prediction["crop"], soil_analysis)
+        logger.info("Alerts generated: %d messages", len(alerts))
+        
+        recommendation = RecommendResponse(
+            soil_analysis=soil_analysis,
+            crop_recommendation=CropRecommendation(
+                crop=prediction["crop"],
+                confidence=prediction["confidence"],
+                alternatives=prediction["alternatives"],
+            ),
+            fertilizer_plan=fertilizer_plan,
+            alerts=alerts,
+            weather_used=False,
+        )
+        logger.info("✓ /sensor-recommend response complete")
+        
+        return {
+            "sensor_data": sensor_data,
+            "recommendation": recommendation,
+        }
+    
+    except Exception as exc:
+        logger.exception("Internal error in /sensor-recommend: %s", exc)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(exc)}",
+        ) from exc
 async def validation_exception_handler(request: Any, exc: RequestValidationError) -> JSONResponse:
     """Handle Pydantic validation errors with clean JSON response."""
     errors = []

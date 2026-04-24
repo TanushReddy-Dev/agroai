@@ -9,6 +9,8 @@ import {
   Text,
   StyleSheet,
   Image,
+  TouchableOpacity,
+  Linking,
 } from 'react-native';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 
@@ -29,9 +31,19 @@ const FertilizerCard = ({
   name,
   amount,
   reason,
+  brand,
+  purchase_link,
 }) => {
   const icon = FERTILIZER_ICONS[name] || FERTILIZER_ICONS.default;
   const image = FERTILIZER_IMAGES[name] || null;
+
+  const handleBuyPress = () => {
+    if (purchase_link) {
+      Linking.openURL(purchase_link).catch(() => {
+        console.warn('[FertilizerCard] Failed to open link:', purchase_link);
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -49,8 +61,14 @@ const FertilizerCard = ({
           )}
           <View style={styles.nameSection}>
             <Text style={styles.name}>{name}</Text>
+            {brand && <Text style={styles.brand}>{brand}</Text>}
             <Text style={styles.amount}>{amount}</Text>
           </View>
+          {purchase_link && (
+            <TouchableOpacity style={styles.buyButton} onPress={handleBuyPress}>
+              <Text style={styles.buyButtonText}>Buy</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Reason */}
@@ -109,6 +127,24 @@ const styles = StyleSheet.create({
     fontSize: FONTS.sizes.sm,
     color: COLORS.textMuted,
     lineHeight: 18,
+  },
+  brand: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.textSecondary,
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  buyButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    borderRadius: RADIUS.sm,
+    marginLeft: SPACING.sm,
+  },
+  buyButtonText: {
+    color: COLORS.surface,
+    fontSize: FONTS.sizes.sm,
+    fontWeight: '600',
   },
 });
 
