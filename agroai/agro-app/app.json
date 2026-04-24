@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "AgroAI",
+    "slug": "agroai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "main": "index.js",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A"
+      }
+    },
+    "web": {},
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow AgroAI to access your location"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "agroai"
+      }
+    }
+  }
+}
