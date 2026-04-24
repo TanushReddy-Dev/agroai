@@ -6,10 +6,9 @@
 import axios from 'axios';
 
 // Create axios instance with base configuration
-// For mobile: Use your machine's LOCAL IP (e.g., 192.168.x.x)
-// Find it with: ipconfig (Windows) or ifconfig (Mac/Linux)
-// Change this to match your development machine's IP
-const API_BASE_URL = 'http://10.60.183.133:8000';
+// Production: Render deployed backend
+// Local development: http://192.168.x.x:8000 (your machine's IP)
+const API_BASE_URL = 'https://agroai-api-h344.onrender.com';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
