@@ -11,6 +11,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Image,
 } from 'react-native';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 import CropResultCard from '../components/CropResultCard';
@@ -81,6 +82,19 @@ const ResultScreen = ({ route, navigation }) => {
     if (message.startsWith('⚠️')) return 'warning';
     if (message.startsWith('🚨')) return 'error';
     return 'info';
+  };
+
+  /**
+   * Get crop image based on crop name
+   */
+  const getCropImage = (cropName) => {
+    const cropMap = {
+      'Maize': require('../assets/crop-maize.png'),
+      'Rice': require('../assets/crop-rice.png'),
+      'Wheat': require('../assets/crop-wheat.png'),
+      'Soybean': require('../assets/crop-soybean.png'),
+    };
+    return cropMap[cropName] || null;
   };
 
   const { soil_analysis, crop_recommendation, fertilizer_plan, alerts, weather_used } = result;

@@ -9,6 +9,7 @@ import {
   Text,
   StyleSheet,
   Animated,
+  Image,
 } from 'react-native';
 import { COLORS, FONTS, SPACING, RADIUS, CROP_ICONS } from '../constants/theme';
 
@@ -30,11 +31,27 @@ const CropResultCard = ({
   const cropEmoji = CROP_ICONS[crop] || CROP_ICONS.default;
   const alternativeEmojis = alternatives.map(alt => CROP_ICONS[alt] || CROP_ICONS.default);
 
+  // Map crop names to image files
+  const getCropImage = (cropName) => {
+    const cropMap = {
+      'Maize': require('../assets/crop-maize.png'),
+      'Rice': require('../assets/crop-rice.png'),
+      'Wheat': require('../assets/crop-wheat.png'),
+      'Soybean': require('../assets/crop-soybean.png'),
+    };
+    return cropMap[cropName] || null;
+  };
+
+  const mainCropImage = getCropImage(crop);
+
   return (
     <View style={styles.container}>
-      {/* Crop name and emoji */}
+      {/* Crop name and image */}
       <View style={styles.cropSection}>
-        <Text style={styles.cropEmoji}>{cropEmoji}</Text>
+        {mainCropImage && (
+          <Image source={mainCropImage} style={styles.cropImage} />
+        )}
+        {!mainCropImage && <Text style={styles.cropEmoji}>{cropEmoji}</Text>}
         <Text style={styles.cropName}>{crop}</Text>
       </View>
 
@@ -91,6 +108,13 @@ const styles = StyleSheet.create({
   cropSection: {
     alignItems: 'center',
     marginBottom: SPACING.lg,
+  },
+  cropImage: {
+    width: 150,
+    height: 150,
+    marginBottom: SPACING.md,
+    borderRadius: RADIUS.lg,
+    resizeMode: 'cover',
   },
   cropEmoji: {
     fontSize: 64,

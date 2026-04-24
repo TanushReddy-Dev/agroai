@@ -8,24 +8,28 @@ import {
   View,
   Text,
   StyleSheet,
+  Image,
 } from 'react-native';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 
 const ALERT_CONFIG = {
   warning: {
     icon: '⚠️',
+    image: require('../assets/icon-warning.png'),
     backgroundColor: 'rgba(245, 158, 11, 0.1)',
     borderColor: COLORS.warning,
     textColor: COLORS.warning,
   },
   error: {
     icon: '🚨',
+    image: require('../assets/icon-error.png'),
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
     borderColor: COLORS.error,
     textColor: COLORS.error,
   },
   info: {
     icon: 'ℹ️',
+    image: require('../assets/icon-info.png'),
     backgroundColor: 'rgba(59, 130, 246, 0.1)',
     borderColor: '#3B82F6',
     textColor: '#3B82F6',

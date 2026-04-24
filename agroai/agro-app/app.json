@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "main": "index.js",
+    "icon": "./assets/app-icon.png",
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -14,8 +15,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0F172A"
-      }
+        "backgroundColor": "#0F172A",
+        "foregroundImage": "./assets/app-icon.png"
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.tanushreddydev.agroai"
     },
     "web": {},
     "plugins": [
@@ -28,7 +35,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "agroai"
+        "projectId": "898946eb-1c4c-417f-bb3c-3e22386d1bc1"
       }
     }
   }

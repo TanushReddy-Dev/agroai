@@ -8,6 +8,7 @@ import {
   View,
   Text,
   StyleSheet,
+  Image,
 } from 'react-native';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 
@@ -18,12 +19,19 @@ const FERTILIZER_ICONS = {
   default: '💊',
 };
 
+const FERTILIZER_IMAGES = {
+  'Urea': require('../assets/icon-urea.png'),
+  'DAP': require('../assets/icon-dap.png'),
+  'MOP': require('../assets/icon-mop.png'),
+};
+
 const FertilizerCard = ({
   name,
   amount,
   reason,
 }) => {
   const icon = FERTILIZER_ICONS[name] || FERTILIZER_ICONS.default;
+  const image = FERTILIZER_IMAGES[name] || null;
 
   return (
     <View style={styles.container}>
@@ -34,7 +42,11 @@ const FertilizerCard = ({
       <View style={styles.content}>
         {/* Icon and name row */}
         <View style={styles.headerRow}>
-          <Text style={styles.icon}>{icon}</Text>
+          {image ? (
+            <Image source={image} style={styles.iconImage} />
+          ) : (
+            <Text style={styles.icon}>{icon}</Text>
+          )}
           <View style={styles.nameSection}>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.amount}>{amount}</Text>
@@ -72,6 +84,12 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 24,
     marginRight: SPACING.md,
+  },
+  iconImage: {
+    width: 40,
+    height: 40,
+    marginRight: SPACING.md,
+    resizeMode: 'contain',
   },
   nameSection: {
     flex: 1,

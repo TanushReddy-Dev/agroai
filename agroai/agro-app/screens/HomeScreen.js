@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Platform,
+  Image,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
@@ -151,9 +152,13 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
+        {/* Header with Logo */}
         <View style={styles.header}>
-          <Text style={styles.title}>🌾 AgroAI</Text>
+          <Image
+            source={require('../assets/app-icon.png')}
+            style={styles.headerLogo}
+          />
+          <Text style={styles.title}>AgroAI</Text>
           <Text style={styles.subtitle}>Smart Crop Intelligence</Text>
         </View>
 
@@ -279,6 +284,12 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: SPACING.xxl,
     alignItems: 'center',
+  },
+  headerLogo: {
+    width: 80,
+    height: 80,
+    marginBottom: SPACING.md,
+    resizeMode: 'contain',
   },
   title: {
     fontSize: FONTS.sizes.display,
